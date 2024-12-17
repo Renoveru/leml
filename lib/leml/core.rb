@@ -72,7 +72,10 @@ module Leml
 
     def merge_secrets
       return unless @key.present? && File.exist?(SECRETS)
-      Rails.application.secrets.merge!(decrypt(@secrets)[Rails.env].deep_symbolize_keys) if @secrets
+      if @secrets
+        decrypted_secrets = decrypt(@secrets)[Rails.env].deep_symbolize_keys
+        Rails.application.credentials.merge(decrypted_secrets)
+      end
     end
 
     def edit

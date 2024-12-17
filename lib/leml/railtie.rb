@@ -3,14 +3,13 @@ require 'rails/railtie'
 module Leml
   class Railtie < Rails::Railtie
     unless ARGV.include? 'leml:init'
-      initializer 'leml.merge_secrets' do
+      initializer 'leml.merge_secrets', before: :load_config_initializers do
         config.before_initialize do
           require 'leml/core'
           Leml::Core.new.merge_secrets
         end
       end
     end
-
     rake_tasks do
       load 'tasks/leml_tasks.rake'
     end
